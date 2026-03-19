@@ -1,2 +1,2 @@
-# Cloud-Management-Project-backend
+# Cloud-Management-Project
 Sample application Backend using MERN structure
