@@ -37,5 +37,16 @@ app.post('/api/invoices', async (req, res) => {
   }
 });
 
+app.put('/api/invoices/:id/status', async (req, res) => {
+  try {
+    const { status } = req.body;
+    const validStatuses = ['Pending', 'Processing', 'Delivered'];
+
+    
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
