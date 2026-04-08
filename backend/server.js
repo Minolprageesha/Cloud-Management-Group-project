@@ -16,6 +16,26 @@ mongoose.connect(MONGO_URI)
   .then(() => console.log('Connected to MongoDB'))
   .catch(err => console.error('Failed to connect to MongoDB', err));
 
+// Routes of the applications
+app.get('/api/invoices', async (req, res) => {
+  try {
+    const invoices = await Invoice.find().sort({ createdAt: -1 });
+    res.json(invoices);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.post('/api/invoices', async (req, res) => {
+  try {
+    const { customerName, customerEmail, amount, description } = req.body;
+    const invoice = new Invoice({ customerName, customerEmail, amount, description });
+    await invoice.save();
+    res.status(201).json(invoice);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+});
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
