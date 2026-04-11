@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-const API_BASE = import.meta.env.VITE_API_BASE || "http://localhost:4000";
+const API_BASE = import.meta.env.VITE_API_BASE || "http://localhost:5000";
 
 export default function CreateOrder() {
   const [form, setForm] = useState({
@@ -8,7 +8,7 @@ export default function CreateOrder() {
     name: "",
     address: "",
     email: "",
-    status: "Created",
+    amount: 0,
   });
 
   const [message, setMessage] = useState("");
@@ -26,11 +26,11 @@ export default function CreateOrder() {
       customerName: form.name,
       customerEmail: form.email,
       address: form.address,
-      status: form.status,
+      amount: form.amount,
     };
 
     try {
-      const res = await fetch(`${API_BASE}/api/orders`, {
+      const res = await fetch(`${API_BASE}/api/invoices`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
@@ -45,7 +45,7 @@ export default function CreateOrder() {
           name: "",
           address: "",
           email: "",
-          status: "Created",
+          amount: 0,
         });
       }
     } catch (err) {
@@ -98,7 +98,17 @@ export default function CreateOrder() {
             required
           />
         </label>
-
+          <label>
+          Total Price 
+          <input
+            type="number"
+            name="amount"
+            value={form.amount}
+            onChange={handleChange}
+            required
+          />
+        </label>
+{/* 
         <label>
           Order Status
           <select name="status" value={form.status} onChange={handleChange}>
@@ -107,7 +117,7 @@ export default function CreateOrder() {
             <option>Out for Delivery</option>
             <option>Delivered</option>
           </select>
-        </label>
+        </label> */}
 
         <button type="submit" className="primary-btn">
           Submit Order

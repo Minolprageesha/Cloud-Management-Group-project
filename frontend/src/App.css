@@ -89,3 +89,14 @@ input, select {
   background: #e3f2fd;
   border-left: 4px solid #1976d2;
 }
+
+/* Add this to your App.css or index.css */
+.align-middle tbody tr td {
+  border-bottom: 1px solid #dee2e6; /* Adjust color here (e.g., #333 for dark) */
+}
+
+/* To specifically target the vertical lines too */
+.align-middle th, .align-middle td {
+  border-left: 1px solid #dee2e6;
+  border-right: 1px solid #dee2e6;
+}

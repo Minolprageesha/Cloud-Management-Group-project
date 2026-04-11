@@ -1,6 +1,10 @@
 const mongoose = require('mongoose');
 
 const invoiceSchema = new mongoose.Schema({
+  orderNumber: {
+    type: String,
+    required: true
+  },
   customerName: {
     type: String,
     required: true
@@ -13,14 +17,14 @@ const invoiceSchema = new mongoose.Schema({
     type: Number,
     required: true
   },
-  description: {
+  address: {
     type: String,
     required: true
   },
   status: {
     type: String,
-    enum: ['Pending', 'Processing', 'Delivered'],
-    default: 'Pending'
+    enum: ["created",'Pending', 'Processing', 'Delivered'],
+    default: 'created'
   }
 }, { timestamps: true });
 

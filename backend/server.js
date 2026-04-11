@@ -28,11 +28,14 @@ app.get('/api/invoices', async (req, res) => {
 
 app.post('/api/invoices', async (req, res) => {
   try {
-    const { customerName, customerEmail, amount, description } = req.body;
-    const invoice = new Invoice({ customerName, customerEmail, amount, description });
+    const { orderNumber,customerName,customerEmail, address,amount } = req.body;
+    const invoice = new Invoice({ orderNumber,customerName, customerEmail, amount, address });
+    console.log(res.body);
     await invoice.save();
     res.status(201).json(invoice);
   } catch (err) {
+    console.log(err);
+    
     res.status(400).json({ error: err.message });
   }
 });
@@ -40,9 +43,16 @@ app.post('/api/invoices', async (req, res) => {
 app.put('/api/invoices/:id/status', async (req, res) => {
   try {
     const { status } = req.body;
-    const validStatuses = ['Pending', 'Processing', 'Delivered'];
+    const validStatuses = ['Created','Pending', 'Processing', 'Delivered'];
+    if (!validStatuses.includes(status)) {
+      return res.status(400).json({ error: 'Invalid status' });
+    }
 
+    const invoice = await Invoice.findByIdAndUpdate(req.params.id, { status }, { new: true });
     
+    if (!invoice) return res.status(404).json({ error: 'Invoice not found' });
+
+    res.json(invoice);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
