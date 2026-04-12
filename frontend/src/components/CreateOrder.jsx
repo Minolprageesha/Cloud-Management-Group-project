@@ -8,7 +8,7 @@ export default function CreateOrder() {
     name: "",
     address: "",
     email: "",
-    amount: 0,
+    totalamount: 0,
   });
 
   const [message, setMessage] = useState("");
@@ -26,7 +26,7 @@ export default function CreateOrder() {
       customerName: form.name,
       customerEmail: form.email,
       address: form.address,
-      amount: form.amount,
+      totalamount: form.totalamount,
     };
 
     try {
@@ -45,7 +45,7 @@ export default function CreateOrder() {
           name: "",
           address: "",
           email: "",
-          amount: 0,
+          totalamount: 0,
         });
       }
     } catch (err) {
@@ -102,8 +102,8 @@ export default function CreateOrder() {
           Total Price 
           <input
             type="number"
-            name="amount"
-            value={form.amount}
+            name="totalamount"
+            value={form.totalamount}
             onChange={handleChange}
             required
           />

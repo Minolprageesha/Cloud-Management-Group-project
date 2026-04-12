@@ -28,8 +28,8 @@ app.get('/api/invoices', async (req, res) => {
 
 app.post('/api/invoices', async (req, res) => {
   try {
-    const { orderNumber,customerName,customerEmail, address,amount } = req.body;
-    const invoice = new Invoice({ orderNumber,customerName, customerEmail, amount, address });
+    const { orderNumber,customerName,customerEmail, address,totalamount } = req.body;
+    const invoice = new Invoice({ orderNumber,customerName, customerEmail, totalamount, address });
     console.log(res.body);
     await invoice.save();
     res.status(201).json(invoice);
