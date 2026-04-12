@@ -3,18 +3,18 @@ version: '3.8'
 services:
   mongodb:
     image: mongo:latest
-    container_name: mern_mongodb
+    container_name: project_mongodb
     ports:
       - "27017:27017"
     volumes:
       - mongo_data:/data/db
     networks:
-      - mern_network
+      - project_network
 
   backend:
     build:
       context: ./backend
-    container_name: mern_backend
+    container_name: project_backend
     restart: always
     ports:
       - "5000:5000"
@@ -24,24 +24,24 @@ services:
     depends_on:
       - mongodb
     networks:
-      - mern_network
+      - project_network
 
   frontend:
     build:
       context: ./frontend
       args:
         - VITE_API_BASE=http://131.163.81.125:5000
-    container_name: mern_frontend
+    container_name: project_frontend
     ports:
       - "8080:80"
     depends_on:
       - backend
     networks:
-      - mern_network
+      - project_network
 
 volumes:
   mongo_data:
 
 networks:
-  mern_network:
+  project_network:
     driver: bridge

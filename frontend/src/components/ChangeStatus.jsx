@@ -95,7 +95,7 @@ const fetchInvoices = async () => {
                     
                   </td>
                   <td><div className="text-muted small">{inv.customerEmail}</div></td>
-                  <td className="fw-semibold">${parseFloat(inv.amount).toFixed(2)}</td>
+                  <td className="fw-semibold">${parseFloat(inv.totalamount).toFixed(2)}</td>
                   <td>
                     <span className={`status-badge ${getStatusBadgeClass(inv.status)}`}>
                       {inv.status}
