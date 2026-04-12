@@ -2,7 +2,7 @@ import { useState,useEffect } from "react";
 import { Table, Spinner, Badge, Input } from 'reactstrap';
 import axios from 'axios';
 
-const API_BASE = import.meta.env.VITE_API_BASE || "http://localhost:5000";
+const VITE_API_BASE = import.meta.env.VITE_API_BASE || "http://localhost:5000";
 
 export default function ChangeStatus() {
 const [invoices, setInvoices] = useState([]);
@@ -11,7 +11,7 @@ const [updating, setUpdating] = useState(null)
 
 const fetchInvoices = async () => {
     try {
-      const res = await axios.get(`${API_BASE}/api/invoices`);
+      const res = await axios.get(`${VITE_API_BASE}/api/invoices`);
       setInvoices(res.data);
     } catch (err) {
       console.error(err);
@@ -46,7 +46,7 @@ const fetchInvoices = async () => {
 
     setUpdating(id);
     try {
-      await axios.put(`${API_BASE}/api/invoices/${id}/status`, { status: newStatus });
+      await axios.put(`${VITE_API_BASE}/api/invoices/${id}/status`, { status: newStatus });
       setInvoices(invoices.map(inv => inv._id === id ? { ...inv, status: newStatus } : inv));
     } catch (err) {
       alert('Error updating status');

@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-const API_BASE = import.meta.env.VITE_API_BASE || "http://localhost:5000";
+const VITE_API_BASE = import.meta.env.VITE_API_BASE || "http://localhost:5000";
 
 export default function CreateOrder() {
   const [form, setForm] = useState({
@@ -30,7 +30,7 @@ export default function CreateOrder() {
     };
 
     try {
-      const res = await fetch(`${API_BASE}/api/invoices`, {
+      const res = await fetch(`${VITE_API_BASE}/api/invoices`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
