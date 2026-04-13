@@ -2,7 +2,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
-const sgMail = require('@sendgrid/mail');
+const { Resend } = require('resend');
 const Invoice = require('./models/Invoice');
 
 const app = express();
@@ -79,39 +79,32 @@ app.put('/api/invoices/:id/status', async (req, res) => {
     if (!invoice) return res.status(404).json({ error: 'Invoice not found' });
 
   
-  if (process.env.SENDGRID_API_KEY) {
-    // DEBUG: Check what the code actually sees
+  if (process.env.RESEND_API_KEY) {
     console.log("Attempting to send from:", process.env.SENDER_EMAIL || 'minolfernando7572@gmail.com');
 
-    const msg = {
-      to: invoice.customerEmail,
-      from: {
-        email: process.env.SENDER_EMAIL || 'minolfernando7572@gmail.com',
-        name: 'Invoice System' // Adding a name can help with spam filters
-      },
-      subject: `Invoice Status Update: ${invoice.status}`,
-      text: `Hello ${invoice.customerName},\n\nYour invoice status for order Number "${invoice.orderNumber}" (Amount: $${invoice.totalamount}) has been updated to: ${invoice.status}.\n\nThank you!`,
-    };
+    if (invoice) {
+      // TRIGGER EMAIL
+      const { data, error } = await resend.emails.send({
+        from: 'Invoice System <onboarding@resend.dev>',
+        to: [process.env.SENDER_EMAIL],
+        subject: `Invoice #${invoice.orderNumber} Status: ${status}`,
+        html: `<strong>Hello ${invoice.customerName},</strong><p>Your invoice status is now: ${status}</p>`,
+      });
 
-    try {
-      await sgMail.send(msg);
-      console.log(`Email successfully sent to ${invoice.customerEmail}`);
-    } catch (emailErr) {
-      console.error('SendGrid Error Details:');
-      if (emailErr.response) {
-        console.error(JSON.stringify(emailErr.response.body, null, 2));
+      if (error) {
+        console.error('Resend Error:', error);
       } else {
-        console.error(emailErr.message);
+        console.log('Email sent successfully:', data.id);
       }
-    }
   } else {
     console.error("Email skipped: SENDGRID_API_KEY is missing in process.env");
   }
     res.json(invoice);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
+  } 
+}catch (err) {
+    console.log(err);
+    res.status(400).json({ error: err.message });
+}});
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
