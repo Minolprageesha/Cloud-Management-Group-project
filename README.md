@@ -21,6 +21,7 @@ This project is a MERN-style parcel notification and invoice management applicat
 
 ```bash
 cd backend
+cp .env.example .env
 npm install
 npm run dev
 ```
@@ -29,6 +30,7 @@ npm run dev
 
 ```bash
 cd frontend
+cp .env.example .env
 npm install
 npm run dev
 ```
