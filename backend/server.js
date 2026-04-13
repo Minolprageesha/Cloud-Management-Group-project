@@ -73,12 +73,12 @@ app.put('/api/invoices/:id/status', async (req, res) => {
     const invoice = await Invoice.findByIdAndUpdate(
       req.params.id,
       { status },
-      { returnDocument: 'after' }
+    { status: newStatus }
     );
 
     if (!invoice) return res.status(404).json({ error: 'Invoice not found' });
 
-  
+  console.log("Attempting to RESEND_API_KEY:", process.env.RESEND_API_KEY || '******************');
   if (process.env.RESEND_API_KEY) {
     console.log("Attempting to send from:", process.env.SENDER_EMAIL || 'minolfernando7572@gmail.com');
     const resend = new Resend(process.env.RESEND_API_KEY);
@@ -96,7 +96,7 @@ app.put('/api/invoices/:id/status', async (req, res) => {
       }
    
   } else {
-    console.error("Email skipped: SENDGRID_API_KEY is missing in process.env");
+    console.error("Email skipped: RESEND_API_KEY is missing in process.env");
   }
 }catch (err) {
     console.log(err);
