@@ -2,15 +2,16 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const { Resend } = require('resend');
 const Invoice = require('./models/Invoice');
 
 const app = express();
 
-// Middleware
+// middileware of the project
 app.use(cors());
 app.use(express.json());
 
-// MongoDB Connection
+// MongoDB Connection with project
 const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/invoice-app';
 
 mongoose
@@ -18,7 +19,7 @@ mongoose
   .then(() => console.log('Connected to MongoDB'))
   .catch((err) => console.error('Failed to connect to MongoDB', err));
 
-// Get all invoices
+// Get all invoices to the frontend
 app.get('/api/invoices', async (req, res) => {
   try {
     const invoices = await Invoice.find().sort({ createdAt: -1 });
@@ -37,7 +38,7 @@ app.post('/api/invoices', async (req, res) => {
       return res.status(400).json({ error: 'orderNumber, customerName, customerEmail and totalamount are required' });
     }
 
-    // 🔥 Check if order already exists
+    // Check if order already exists in data base
     const existingOrder = await Invoice.findOne({ orderNumber });
     if (existingOrder) {
       return res.status(400).json({ error: 'Order already exists' });
@@ -59,7 +60,6 @@ app.post('/api/invoices', async (req, res) => {
   }
 });
 
-// Update invoice status
 app.put('/api/invoices/:id/status', async (req, res) => {
   try {
     const { status } = req.body;
@@ -68,18 +68,39 @@ app.put('/api/invoices/:id/status', async (req, res) => {
     if (!status || !validStatuses.includes(status)) {
       return res.status(400).json({ error: 'Invalid status' });
     }
-
     const invoice = await Invoice.findByIdAndUpdate(
       req.params.id,
       { status },
-      { new: true }
+      { new: true } 
     );
 
     if (!invoice) return res.status(404).json({ error: 'Invoice not found' });
 
     res.json(invoice);
+    if (process.env.RESEND_API_KEY) {
+      const resend = new Resend(process.env.RESEND_API_KEY);
+      
+      const { data, error } = await resend.emails.send({
+        from: 'Invoice System <notifications@pdpcourier.xyz>',
+        to: [invoice.customerEmail], 
+        subject: `Invoice #${invoice.orderNumber} Status: ${status}`,
+        html: `<strong>Hello ${invoice.customerName},</strong><p>Your invoice status for Order #${invoice.orderNumber} is now: <b>${status}</b></p>`,
+      });
+
+      if (error) {
+        console.error('Resend Error:', error);
+      } else {
+        console.log('✅ Email sent successfully:', data.id);
+      }
+    } else {
+      console.error("Email skipped: RESEND_API_KEY is missing");
+    }
+
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    console.error("Server Error:", err);
+    if (!res.headersSent) {
+      res.status(500).json({ error: err.message });
+    }
   }
 });
 
