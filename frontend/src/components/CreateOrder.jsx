@@ -8,7 +8,7 @@ export default function CreateOrder() {
     name: "",
     address: "",
     email: "",
-    totalamount: 0,
+    totalamount: "",
   });
 
   const [message, setMessage] = useState("");
@@ -26,7 +26,7 @@ export default function CreateOrder() {
       customerName: form.name,
       customerEmail: form.email,
       address: form.address,
-      totalamount: form.totalamount,
+      totalamount: Number(form.totalamount),
     };
 
     try {
@@ -37,17 +37,25 @@ export default function CreateOrder() {
       });
 
       const data = await res.json();
-      setMessage(data.message);
 
-      if (res.ok) {
-        setForm({
-          orderId: "",
-          name: "",
-          address: "",
-          email: "",
-          totalamount: 0,
-        });
+      // ⭐ Show backend error in message box
+      if (!res.ok) {
+        setMessage(data.error || "Something went wrong");
+        return;
       }
+
+      // ⭐ Success message
+      setMessage("Order created successfully");
+
+      // Reset form
+      setForm({
+        orderId: "",
+        name: "",
+        address: "",
+        email: "",
+        totalamount: "",
+      });
+
     } catch (err) {
       setMessage("Network error");
     }
@@ -55,76 +63,77 @@ export default function CreateOrder() {
 
   return (
     <>
-      <h2>Create New Order</h2>
+      {/* ⭐ Message box at the top */}
+      {message && <p className="message top-message">{message}</p>}
 
-      <form className="form" onSubmit={handleSubmit}>
-        <label>
-          Order ID
-          <input
-            name="orderId"
-            value={form.orderId}
-            onChange={handleChange}
-            required
-          />
-        </label>
+      <div className="card">
+        <h2 style={{ marginBottom: "20px", color: "#d32f2f" }}>
+          Create New Order
+        </h2>
 
-        <label>
-          Customer Name
-          <input
-            name="name"
-            value={form.name}
-            onChange={handleChange}
-            required
-          />
-        </label>
-
-        <label>
-          Home Address
-          <input
-            name="address"
-            value={form.address}
-            onChange={handleChange}
-            required
-          />
-        </label>
-
-        <label>
-          Email Address
-          <input
-            type="email"
-            name="email"
-            value={form.email}
-            onChange={handleChange}
-            required
-          />
-        </label>
+        <form className="form" onSubmit={handleSubmit}>
           <label>
-          Total Price 
-          <input
-            type="number"
-            name="totalamount"
-            value={form.totalamount}
-            onChange={handleChange}
-            required
-          />
-        </label>
-{/* 
-        <label>
-          Order Status
-          <select name="status" value={form.status} onChange={handleChange}>
-            <option>Created</option>
-            <option>Processing</option>
-            <option>Out for Delivery</option>
-            <option>Delivered</option>
-          </select>
-        </label> */}
+            Order ID
+            <input
+              name="orderId"
+              value={form.orderId}
+              onChange={handleChange}
+              placeholder="Enter order number"
+              required
+            />
+          </label>
 
-        <button type="submit" className="primary-btn">
-          Submit Order
-        </button>
-      </form>
+          <label>
+            Customer Name
+            <input
+              name="name"
+              value={form.name}
+              onChange={handleChange}
+              placeholder="Enter customer name"
+              required
+            />
+          </label>
 
-      {message && <p className="message">{message}</p>}
+          <label>
+            Home Address
+            <input
+              name="address"
+              value={form.address}
+              onChange={handleChange}
+              placeholder="Enter home address"
+              required
+            />
+          </label>
+
+          <label>
+            Email Address
+            <input
+              type="email"
+              name="email"
+              value={form.email}
+              onChange={handleChange}
+              placeholder="Enter email address"
+              required
+            />
+          </label>
+
+          <label>
+            Total Price
+            <input
+              type="number"
+              name="totalamount"
+              value={form.totalamount}
+              onChange={handleChange}
+              placeholder="Enter total amount"
+              required
+            />
+          </label>
+
+          <button type="submit" className="primary-btn">
+            Submit Order
+          </button>
+        </form>
+      </div>
     </>
   );
 }

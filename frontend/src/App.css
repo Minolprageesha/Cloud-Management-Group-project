@@ -90,13 +90,125 @@ input, select {
   border-left: 4px solid #1976d2;
 }
 
-/* Add this to your App.css or index.css */
-.align-middle tbody tr td {
-  border-bottom: 1px solid #dee2e6; /* Adjust color here (e.g., #333 for dark) */
+/* ----------------------------- */
+/* BEAUTIFIED TABLE STYLING      */
+/* ----------------------------- */
+
+.table-responsive {
+  margin-top: 20px;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #ffffff;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
 }
 
-/* To specifically target the vertical lines too */
-.align-middle th, .align-middle td {
+table {
+  width: 100%;
+  border-collapse: separate !important;
+  border-spacing: 0;
+}
+
+thead th {
+  background: #f8f9fa;
+  font-weight: 600;
+  padding: 14px;
+  font-size: 15px;
+  border-bottom: 2px solid #e0e0e0;
+}
+
+tbody td {
+  padding: 14px;
+  vertical-align: middle;
+  background: white;
+}
+
+/* Hover effect */
+tbody tr:hover {
+  background: #f9f9f9;
+  transition: 0.2s ease-in-out;
+}
+
+/* Status badges */
+.status-badge {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  color: white;
+}
+
+.status-pending {
+  background: #f0ad4e;
+}
+
+.status-processing {
+  background: #0275d8;
+}
+
+.status-delivered {
+  background: #5cb85c;
+}
+
+.status-Created {
+  background: #6c757d;
+}
+
+/* Dropdown */
+.form-select-sm {
+  border-radius: 8px;
+  padding: 6px;
+}
+
+/* Vertical + horizontal borders */
+.align-middle tbody tr td {
+  border-bottom: 1px solid #dee2e6;
+}
+
+.align-middle th,
+.align-middle td {
   border-left: 1px solid #dee2e6;
   border-right: 1px solid #dee2e6;
+}
+
+/* ----------------------------- */
+/* MOBILE RESPONSIVE TABLE       */
+/* ----------------------------- */
+
+@media (max-width: 768px) {
+  thead {
+    display: none;
+  }
+
+  tbody tr {
+    display: block;
+    margin-bottom: 15px;
+    border: 1px solid #eee;
+    border-radius: 10px;
+    padding: 10px;
+    background: white;
+  }
+
+  tbody td {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 6px;
+    border: none !important;
+  }
+
+  tbody td::before {
+    content: attr(data-label);
+    font-weight: 600;
+    color: #555;
+  }
+}
+/* Remove number input arrows (Chrome, Edge, Safari) */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Remove number input arrows (Firefox) */
+input[type="number"] {
+  -moz-appearance: textfield;
 }
