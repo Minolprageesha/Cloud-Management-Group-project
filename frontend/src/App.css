@@ -262,6 +262,12 @@ select {
   text-align: center;
 }
 
+.loading-state p {
+  margin-top: 14px;
+  color: #64748b;
+  font-weight: 600;
+}
+
 .table-responsive {
   margin-top: 20px;
   border-radius: 18px;

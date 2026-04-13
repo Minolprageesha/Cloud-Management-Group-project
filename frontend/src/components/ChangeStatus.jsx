@@ -10,13 +10,15 @@ export default function ChangeStatus() {
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState(null);
   const [query, setQuery] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   const fetchInvoices = async () => {
     try {
+      setErrorMessage("");
       const res = await axios.get(`${VITE_API_BASE}/api/invoices`);
       setInvoices(res.data);
     } catch (err) {
-      console.error(err);
+      setErrorMessage("Unable to load orders right now. Please refresh and try again.");
     } finally {
       setLoading(false);
     }
@@ -29,6 +31,7 @@ export default function ChangeStatus() {
   const handleStatusChange = async (id, newStatus) => {
     setUpdating(id);
     try {
+      setErrorMessage("");
       await axios.put(`${VITE_API_BASE}/api/invoices/${id}/status`, {
         status: newStatus,
       });
@@ -39,7 +42,7 @@ export default function ChangeStatus() {
         )
       );
     } catch (err) {
-      alert("Error updating status");
+      setErrorMessage("Status update failed. Please try again.");
     } finally {
       setUpdating(null);
     }
@@ -84,6 +87,7 @@ export default function ChangeStatus() {
     return (
       <div className="loading-state">
         <Spinner color="primary" />
+        <p>Loading current order records...</p>
       </div>
     );
 
@@ -97,6 +101,8 @@ export default function ChangeStatus() {
           from the operations table.
         </p>
       </div>
+
+      {errorMessage ? <p className="message-banner error">{errorMessage}</p> : null}
 
       <section className="summary-grid">
         <article className="metric-card">
