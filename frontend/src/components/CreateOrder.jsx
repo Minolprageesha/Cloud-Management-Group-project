@@ -12,6 +12,8 @@ export default function CreateOrder() {
   });
 
   const [message, setMessage] = useState("");
+  const [messageType, setMessageType] = useState("info");
+  const [submitting, setSubmitting] = useState(false);
 
   const handleChange = (e) => {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -20,6 +22,7 @@ export default function CreateOrder() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setMessage("");
+    setSubmitting(true);
 
     const payload = {
       orderNumber: form.orderId,
@@ -40,11 +43,14 @@ export default function CreateOrder() {
 
       // ⭐ Show backend error in message box
       if (!res.ok) {
+        setMessageType("error");
         setMessage(data.error || "Something went wrong");
+        setSubmitting(false);
         return;
       }
 
       // ⭐ Success message
+      setMessageType("success");
       setMessage("Order created successfully");
 
       // Reset form
@@ -55,30 +61,36 @@ export default function CreateOrder() {
         email: "",
         totalamount: "",
       });
-
     } catch (err) {
+      setMessageType("error");
       setMessage("Network error");
+    } finally {
+      setSubmitting(false);
     }
   };
 
   return (
-    <>
-      {/* ⭐ Message box at the top */}
-      {message && <p className="message top-message">{message}</p>}
+    <section className="feature-grid">
+      <article className="form-panel">
+        <div className="panel-heading">
+          <p className="section-kicker">Invoice Creation</p>
+          <h2>Create New Order</h2>
+          <p className="panel-copy">
+            Add a new customer order so the operations team can begin tracking its invoice and
+            delivery workflow.
+          </p>
+        </div>
 
-      <div className="card">
-        <h2 style={{ marginBottom: "20px", color: "#d32f2f" }}>
-          Create New Order
-        </h2>
+        {message ? <p className={`message-banner ${messageType}`}>{message}</p> : null}
 
-        <form className="form" onSubmit={handleSubmit}>
+        <form className="form-grid" onSubmit={handleSubmit}>
           <label>
             Order ID
             <input
               name="orderId"
               value={form.orderId}
               onChange={handleChange}
-              placeholder="Enter order number"
+              placeholder="ORD-1024"
               required
             />
           </label>
@@ -89,18 +101,18 @@ export default function CreateOrder() {
               name="name"
               value={form.name}
               onChange={handleChange}
-              placeholder="Enter customer name"
+              placeholder="Aisling Byrne"
               required
             />
           </label>
 
-          <label>
+          <label className="full-width">
             Home Address
             <input
               name="address"
               value={form.address}
               onChange={handleChange}
-              placeholder="Enter home address"
+              placeholder="12 River Park, Dublin"
               required
             />
           </label>
@@ -112,7 +124,7 @@ export default function CreateOrder() {
               name="email"
               value={form.email}
               onChange={handleChange}
-              placeholder="Enter email address"
+              placeholder="customer@example.com"
               required
             />
           </label>
@@ -121,19 +133,44 @@ export default function CreateOrder() {
             Total Price
             <input
               type="number"
+              min="0"
+              step="0.01"
               name="totalamount"
               value={form.totalamount}
               onChange={handleChange}
-              placeholder="Enter total amount"
+              placeholder="499.99"
               required
             />
           </label>
 
-          <button type="submit" className="primary-btn">
-            Submit Order
+          <button type="submit" className="primary-btn full-width" disabled={submitting}>
+            {submitting ? "Submitting..." : "Submit Order"}
           </button>
         </form>
-      </div>
-    </>
+      </article>
+
+      <aside className="info-panel">
+        <div className="info-card accent-card">
+          <span className="highlight-label">Quick Guide</span>
+          <p>Use a unique order ID to avoid duplicate invoice records in the database.</p>
+        </div>
+
+        <div className="info-card">
+          <span className="highlight-label">Validation Focus</span>
+          <p>
+            Customer name, email, amount, and order number are all required before the request is
+            sent to the backend.
+          </p>
+        </div>
+
+        <div className="info-card">
+          <span className="highlight-label">Cloud Angle</span>
+          <p>
+            This cleaner intake flow supports the group&apos;s cloud operations story by improving the
+            employee-facing order submission process.
+          </p>
+        </div>
+      </aside>
+    </section>
   );
 }
