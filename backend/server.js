@@ -68,9 +68,6 @@ app.put('/api/invoices/:id/status', async (req, res) => {
     if (!status || !validStatuses.includes(status)) {
       return res.status(400).json({ error: 'Invalid status' });
     }
-
-    // FIX 1: Use { new: true } so 'invoice' variable has the updated status
-    // Removed the duplicate { status: status } block
     const invoice = await Invoice.findByIdAndUpdate(
       req.params.id,
       { status },
@@ -79,18 +76,13 @@ app.put('/api/invoices/:id/status', async (req, res) => {
 
     if (!invoice) return res.status(404).json({ error: 'Invoice not found' });
 
-    // Send success response to frontend immediately so it doesn't wait for the email
     res.json(invoice);
-
-    // FIX 2: Check for API Key
     if (process.env.RESEND_API_KEY) {
       const resend = new Resend(process.env.RESEND_API_KEY);
       
       const { data, error } = await resend.emails.send({
         from: 'Invoice System <onboarding@resend.dev>',
-        // FIX 3: In testing mode, you must send to YOUR verified email
-        // Once you have a domain, you can change this to [invoice.customerEmail]
-        to: ['minolfernando7572@gmail.com'], 
+        to: [invoice.customerEmail], 
         subject: `Invoice #${invoice.orderNumber} Status: ${status}`,
         html: `<strong>Hello ${invoice.customerName},</strong><p>Your invoice status for Order #${invoice.orderNumber} is now: <b>${status}</b></p>`,
       });
