@@ -78,24 +78,35 @@ app.put('/api/invoices/:id/status', async (req, res) => {
 
     if (!invoice) return res.status(404).json({ error: 'Invoice not found' });
 
-        // Send email notification if API key is not a placeholder
-    if (process.env.SENDGRID_API_KEY) {
-      const msg = {
-        to: invoice.customerEmail,
-        from: process.env.SENDER_EMAIL || 'minolfernando7572@gmail.com', 
-        subject: `Invoice Status Update: ${invoice.status}`,
-        text: `Hello ${invoice.customerName},\n\nYour invoice status for order Number "${invoice.orderNumber}" (Amount: $${invoice.totalamount}) has been updated to: ${invoice.status}.\n\nThank you!`,
-      };
-      
-      try {
-        await sgMail.send(msg);
-        console.log(`Email sent to ${invoice.customerEmail}`);
-      } catch (emailErr) {
-        console.error('Error sending email:', emailErr.response ? emailErr.response.body : emailErr.message);
+  
+  if (process.env.SENDGRID_API_KEY) {
+    // DEBUG: Check what the code actually sees
+    console.log("Attempting to send from:", process.env.SENDER_EMAIL || 'minolfernando7572@gmail.com');
+
+    const msg = {
+      to: invoice.customerEmail,
+      from: {
+        email: process.env.SENDER_EMAIL || 'minolfernando7572@gmail.com',
+        name: 'Invoice System' // Adding a name can help with spam filters
+      },
+      subject: `Invoice Status Update: ${invoice.status}`,
+      text: `Hello ${invoice.customerName},\n\nYour invoice status for order Number "${invoice.orderNumber}" (Amount: $${invoice.totalamount}) has been updated to: ${invoice.status}.\n\nThank you!`,
+    };
+
+    try {
+      await sgMail.send(msg);
+      console.log(`Email successfully sent to ${invoice.customerEmail}`);
+    } catch (emailErr) {
+      console.error('SendGrid Error Details:');
+      if (emailErr.response) {
+        console.error(JSON.stringify(emailErr.response.body, null, 2));
+      } else {
+        console.error(emailErr.message);
       }
-    } else {
-      console.log(`Status updated to ${status}. (SendGrid API Key not configured; email skipped)`);
     }
+  } else {
+    console.error("Email skipped: SENDGRID_API_KEY is missing in process.env");
+  }
     res.json(invoice);
   } catch (err) {
     res.status(500).json({ error: err.message });
