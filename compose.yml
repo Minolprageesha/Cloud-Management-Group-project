@@ -1,0 +1,47 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:latest
+    container_name: project_mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - project_network
+
+  backend:
+    build:
+      context: ./backend
+    container_name: project_backend
+    restart: always
+    ports:
+      - "5000:5000"
+    environment:
+      - MONGO_URI=mongodb://project_mongodb:27017/invoice-app
+      - PORT=5000
+    depends_on:
+      - mongodb
+    networks:
+      - project_network
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        - VITE_API_BASE=http://131.163.81.125:5000
+    container_name: project_frontend
+    ports:
+      - "8080:80"
+    depends_on:
+      - backend
+    networks:
+      - project_network
+
+volumes:
+  mongo_data:
+
+networks:
+  project_network:
+    driver: bridge
