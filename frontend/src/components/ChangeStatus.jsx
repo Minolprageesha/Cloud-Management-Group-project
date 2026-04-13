@@ -9,6 +9,7 @@ export default function ChangeStatus() {
   const [invoices, setInvoices] = useState([]);
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState(null);
+  const [query, setQuery] = useState("");
 
   const fetchInvoices = async () => {
     try {
@@ -56,24 +57,80 @@ export default function ChangeStatus() {
         return "status-delivered";
       default:
         return "bg-secondary";
-    }
+      }
+  };
+
+  const filteredInvoices = invoices.filter((inv) => {
+    const searchTarget = [
+      inv.customerName,
+      inv.customerEmail,
+      inv.orderNumber,
+      inv.status
+    ]
+      .join(" ")
+      .toLowerCase();
+
+    return searchTarget.includes(query.trim().toLowerCase());
+  });
+
+  const summary = {
+    total: invoices.length,
+    created: invoices.filter((inv) => inv.status === "Created").length,
+    processing: invoices.filter((inv) => inv.status === "Processing").length,
+    delivered: invoices.filter((inv) => inv.status === "Delivered").length
   };
 
   if (loading)
     return (
-      <div className="text-center mt-5">
+      <div className="loading-state">
         <Spinner color="primary" />
       </div>
     );
 
   return (
     <>
-      <h2>Update Order Status</h2>
+      <div className="panel-heading">
+        <p className="section-kicker">Status Management</p>
+        <h2>Update Order Status</h2>
+        <p className="panel-copy">
+          Search customer records, review progress at a glance, and update invoice status directly
+          from the operations table.
+        </p>
+      </div>
+
+      <section className="summary-grid">
+        <article className="metric-card">
+          <span>Total Orders</span>
+          <strong>{summary.total}</strong>
+        </article>
+        <article className="metric-card">
+          <span>Created</span>
+          <strong>{summary.created}</strong>
+        </article>
+        <article className="metric-card">
+          <span>Processing</span>
+          <strong>{summary.processing}</strong>
+        </article>
+        <article className="metric-card accent">
+          <span>Delivered</span>
+          <strong>{summary.delivered}</strong>
+        </article>
+      </section>
+
+      <div className="search-bar">
+        <input
+          type="text"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder="Search by customer, email, order number, or status"
+        />
+      </div>
 
       <div className="table-responsive">
         <Table hover bordered className="align-middle">
           <thead>
             <tr>
+              <th>Order</th>
               <th>Customer</th>
               <th>Email</th>
               <th>Amount</th>
@@ -83,25 +140,29 @@ export default function ChangeStatus() {
           </thead>
 
           <tbody className="table-group-divider">
-            {invoices.length === 0 ? (
+            {filteredInvoices.length === 0 ? (
               <tr>
-                <td colSpan="5" className="text-center text-muted py-4">
-                  No invoices found. Create one!
+                <td colSpan="6" className="empty-table-state">
+                  No matching orders found. Try a different search or create a new one.
                 </td>
               </tr>
             ) : (
-              invoices.map((inv) => (
+              filteredInvoices.map((inv) => (
                 <tr key={inv._id}>
+                  <td data-label="Order">
+                    <div className="order-number">{inv.orderNumber || "N/A"}</div>
+                  </td>
+
                   <td data-label="Customer">
-                    <div className="fw-bold">{inv.customerName}</div>
+                    <div className="customer-name">{inv.customerName}</div>
                   </td>
 
 
                   <td data-label="Email">
-                    <div className="text-muted small">{inv.customerEmail}</div>
+                    <div className="customer-email">{inv.customerEmail}</div>
                   </td>
 
-                  <td data-label="Amount" className="fw-semibold">
+                  <td data-label="Amount" className="amount-cell">
                     ${Number(inv.totalamount).toFixed(2)}
                   </td>
 
@@ -125,8 +186,9 @@ export default function ChangeStatus() {
                         handleStatusChange(inv._id, e.target.value)
                       }
                       className="form-select-sm"
-                      style={{ width: "130px" }}
+                      style={{ width: "150px" }}
                     >
+                      <option value="Created">Created</option>
                       <option value="Pending">Pending</option>
                       <option value="Processing">Processing</option>
                       <option value="Delivered">Delivered</option>
