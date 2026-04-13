@@ -81,9 +81,7 @@ app.put('/api/invoices/:id/status', async (req, res) => {
   
   if (process.env.RESEND_API_KEY) {
     console.log("Attempting to send from:", process.env.SENDER_EMAIL || 'minolfernando7572@gmail.com');
-
-    if (invoice) {
-      // TRIGGER EMAIL
+    const resend = new Resend(process.env.RESEND_API_KEY);
       const { data, error } = await resend.emails.send({
         from: 'Invoice System <onboarding@resend.dev>',
         to: [process.env.SENDER_EMAIL],
@@ -96,11 +94,10 @@ app.put('/api/invoices/:id/status', async (req, res) => {
       } else {
         console.log('Email sent successfully:', data.id);
       }
+   
   } else {
     console.error("Email skipped: SENDGRID_API_KEY is missing in process.env");
   }
-    res.json(invoice);
-  } 
 }catch (err) {
     console.log(err);
     res.status(400).json({ error: err.message });
