@@ -2,15 +2,16 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const sgMail = require('@sendgrid/mail');
 const Invoice = require('./models/Invoice');
 
 const app = express();
 
-// Middleware
+// middileware of the project
 app.use(cors());
 app.use(express.json());
 
-// MongoDB Connection
+// MongoDB Connection with project
 const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/invoice-app';
 
 mongoose
@@ -18,7 +19,7 @@ mongoose
   .then(() => console.log('Connected to MongoDB'))
   .catch((err) => console.error('Failed to connect to MongoDB', err));
 
-// Get all invoices
+// Get all invoices to the frontend
 app.get('/api/invoices', async (req, res) => {
   try {
     const invoices = await Invoice.find().sort({ createdAt: -1 });
@@ -37,7 +38,7 @@ app.post('/api/invoices', async (req, res) => {
       return res.status(400).json({ error: 'orderNumber, customerName, customerEmail and totalamount are required' });
     }
 
-    // 🔥 Check if order already exists
+    // Check if order already exists in data base
     const existingOrder = await Invoice.findOne({ orderNumber });
     if (existingOrder) {
       return res.status(400).json({ error: 'Order already exists' });
@@ -59,7 +60,7 @@ app.post('/api/invoices', async (req, res) => {
   }
 });
 
-// Update invoice status
+// Update invoice status in database
 app.put('/api/invoices/:id/status', async (req, res) => {
   try {
     const { status } = req.body;
@@ -77,6 +78,24 @@ app.put('/api/invoices/:id/status', async (req, res) => {
 
     if (!invoice) return res.status(404).json({ error: 'Invoice not found' });
 
+        // Send email notification if API key is not a placeholder
+    if (process.env.SENDGRID_API_KEY) {
+      const msg = {
+        to: invoice.customerEmail,
+        from: process.env.SENDER_EMAIL || 'minolfernando7572@gmail.com', 
+        subject: `Invoice Status Update: ${invoice.status}`,
+        text: `Hello ${invoice.customerName},\n\nYour invoice status for order Number "${invoice.orderNumber}" (Amount: $${invoice.totalamount}) has been updated to: ${invoice.status}.\n\nThank you!`,
+      };
+      
+      try {
+        await sgMail.send(msg);
+        console.log(`Email sent to ${invoice.customerEmail}`);
+      } catch (emailErr) {
+        console.error('Error sending email:', emailErr.response ? emailErr.response.body : emailErr.message);
+      }
+    } else {
+      console.log(`Status updated to ${status}. (SendGrid API Key not configured; email skipped)`);
+    }
     res.json(invoice);
   } catch (err) {
     res.status(500).json({ error: err.message });
