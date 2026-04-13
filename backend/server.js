@@ -81,7 +81,7 @@ app.put('/api/invoices/:id/status', async (req, res) => {
       const resend = new Resend(process.env.RESEND_API_KEY);
       
       const { data, error } = await resend.emails.send({
-        from: 'Invoice System <onboarding@resend.dev>',
+        from: 'Invoice System <notifications@pdpcourier.xyz>',
         to: [invoice.customerEmail], 
         subject: `Invoice #${invoice.orderNumber} Status: ${status}`,
         html: `<strong>Hello ${invoice.customerName},</strong><p>Your invoice status for Order #${invoice.orderNumber} is now: <b>${status}</b></p>`,
