@@ -201,7 +201,7 @@ export default function ChangeStatus({ mode, setMode }) {
                   </td>
 
                   <td data-label="Amount" className="amount-cell">
-                    ${Number(inv.totalamount).toFixed(2)}
+                    € {Number(inv.totalamount).toFixed(2)}
                   </td>
 
                   <td data-label="Status">
