@@ -303,6 +303,10 @@ select {
 
 .metric-card {
   padding: 14px 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
 }
 
 .metric-card span {
@@ -329,9 +333,43 @@ select {
 }
 
 .search-bar input {
-  background: #f8fafc;
+  background: #ffffff;
+  border: 1.5px solid rgba(15, 23, 42, 0.2);
+  border-radius: 14px;
+  padding: 13px 16px;
+  font-size: 0.95rem;
+  color: #1e293b;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.06);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
+.search-bar input:focus {
+  outline: none;
+  border-color: #DC0032;
+  box-shadow: 0 0 0 3px rgba(220, 0, 50, 0.1);
+}
+
+.search-bar input::placeholder {
+  color: #94a3b8;
+}
+/* ── Search input wrapper ────────────────────────────── */
+.search-input-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.search-input-wrapper input {
+  padding-left: 42px;
+}
+
+.search-icon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #94a3b8;
+  pointer-events: none;
+}
 /* ── Loading state ───────────────────────────────────── */
 .loading-state {
   padding: 40px 0;
@@ -362,15 +400,18 @@ table {
 thead th {
   background: #f8fafc;
   font-weight: 700;
-  padding: 14px;
+  padding: 14px 14px;
   font-size: 0.95rem;
   border-bottom: 1px solid #e2e8f0;
+  text-align: left;
+  vertical-align: middle;
 }
 
 tbody td {
-  padding: 14px;
+  padding: 14px 14px;
   vertical-align: middle;
   background: white;
+  text-align: left;
 }
 
 tbody tr:hover td {
