@@ -1,21 +1,132 @@
-body {
+/* ── Base ────────────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
   margin: 0;
-  font-family: "Inter", sans-serif;
+  padding: 0;
+}
+
+body {
+  font-family: "Inter", "Segoe UI", sans-serif;
   background:
-    radial-gradient(circle at top left, rgba(211, 47, 47, 0.12), transparent 22%),
+    radial-gradient(circle at top left, rgba(220, 0, 50, 0.08), transparent 22%),
     linear-gradient(180deg, #f7f3ef 0%, #fcfdff 48%, #eef3fb 100%);
   color: #1f2937;
 }
 
+/* ── App Shell ───────────────────────────────────────── */
 .app-shell {
-  max-width: 1180px;
-  margin: 0 auto;
-  padding: 28px 20px 48px;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
+/* ── Header ──────────────────────────────────────────── */
+.app-header {
+  background: linear-gradient(160deg, #7a0018 0%, #DC0032 100%);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  width: 100%;
+}
+
+.app-header-inner {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 0 20px;
+  height: 62px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Brand — left */
+.app-brand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.brand-logomark {
+  margin-right: 8px;
+}
+
+.brand-logomark svg {
+  width: 52px;
+  height: 28px;
+  display: block;
+}
+
+.brand-divider {
+  width: 1px;
+  height: 32px;
+  background-color: rgba(255, 255, 255, 0.3);
+  flex-shrink: 0;
+}
+
+.brand-text {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.brand-name {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: 0.02em;
+  line-height: 1;
+}
+
+.brand-tagline {
+  font-size: 0.7rem;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.68);
+  letter-spacing: 0.03em;
+}
+
+/* Avatar — right */
+.app-header-right {
+  display: flex;
+  align-items: center;
+}
+
+.header-avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.15);
+  border: 1.5px solid rgba(255, 255, 255, 0.32);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.67rem;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.header-avatar:hover {
+  background-color: rgba(255, 255, 255, 0.25);
+}
+
+/* ── Content ─────────────────────────────────────────── */
+.content-card {
+  max-width: 1180px;
+  width: 100%;
+  margin: 28px auto;
+  padding: 28px 20px 48px;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  border-radius: 0;
+}
+
+/* ── Card base (shared) ──────────────────────────────── */
 .hero-panel,
 .toolbar-panel,
-.content-card,
 .highlight-card,
 .metric-card,
 .form-panel,
@@ -26,16 +137,7 @@ body {
   box-shadow: 0 18px 36px rgba(15, 23, 42, 0.08);
 }
 
-.hero-panel {
-  display: grid;
-  grid-template-columns: 1.25fr 0.75fr;
-  gap: 20px;
-  padding: 28px;
-  background:
-    radial-gradient(circle at top left, rgba(211, 47, 47, 0.15), transparent 28%),
-    linear-gradient(135deg, #fff6f3 0%, #ffffff 46%, #eef5ff 100%);
-}
-
+/* ── Section kicker / labels ─────────────────────────── */
 .eyebrow,
 .section-kicker,
 .highlight-label {
@@ -47,20 +149,7 @@ body {
   color: #c62828;
 }
 
-.hero-copy {
-  max-width: 64ch;
-  color: #475569;
-  font-size: 1.02rem;
-}
-
-.mode-banner {
-  margin-top: 24px;
-  padding: 22px;
-  border-radius: 22px;
-  background: rgba(255, 255, 255, 0.82);
-  border: 1px solid rgba(15, 23, 42, 0.08);
-}
-
+/* ── Panel heading ───────────────────────────────────── */
 .mode-banner h2,
 .panel-heading h2 {
   margin: 0 0 10px;
@@ -77,26 +166,7 @@ body {
   line-height: 1.6;
 }
 
-.hero-side-panel,
-.summary-grid,
-.feature-grid {
-  display: grid;
-  gap: 16px;
-}
-
-.highlight-card {
-  padding: 18px;
-}
-
-.toolbar-panel {
-  margin-top: 22px;
-  padding: 20px 22px;
-  display: flex;
-  justify-content: space-between;
-  gap: 18px;
-  align-items: center;
-}
-
+/* ── Toggle buttons ──────────────────────────────────── */
 .toggle-buttons {
   display: flex;
   gap: 12px;
@@ -130,16 +200,15 @@ body {
   transform: translateY(-1px);
 }
 
-.content-card {
-  margin-top: 22px;
-  padding: 28px;
-}
-
+/* ── Feature grid ────────────────────────────────────── */
 .feature-grid {
+  display: grid;
   grid-template-columns: 1.2fr 0.8fr;
+  gap: 16px;
   align-items: start;
 }
 
+/* ── Form panel ──────────────────────────────────────── */
 .form-panel {
   padding: 24px;
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(248, 250, 252, 0.95));
@@ -166,7 +235,6 @@ select {
   border-radius: 14px;
   border: 1px solid rgba(148, 163, 184, 0.45);
   background: #fff;
-  margin-top: 0;
   font: inherit;
   box-sizing: border-box;
 }
@@ -186,6 +254,7 @@ select {
   transform: none;
 }
 
+/* ── Info panel ──────────────────────────────────────── */
 .info-panel {
   display: grid;
   gap: 16px;
@@ -204,6 +273,7 @@ select {
   color: #dbeafe;
 }
 
+/* ── Message banner ──────────────────────────────────── */
 .message-banner {
   margin: 16px 0 18px;
   padding: 14px 16px;
@@ -223,25 +293,29 @@ select {
   border: 1px solid #fecdd3;
 }
 
+/* ── Summary grid ────────────────────────────────────── */
 .summary-grid {
+  display: grid;
   margin: 22px 0 18px;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 12px;
 }
 
 .metric-card {
-  padding: 18px;
+  padding: 14px 12px;
 }
 
 .metric-card span {
   display: block;
   color: #64748b;
-  font-size: 0.9rem;
+  font-size: 0.82rem;
+  white-space: nowrap;
 }
 
 .metric-card strong {
   display: block;
-  margin-top: 10px;
-  font-size: 1.9rem;
+  margin-top: 8px;
+  font-size: 1.6rem;
   color: #10233d;
 }
 
@@ -249,6 +323,7 @@ select {
   color: #0f6cbd;
 }
 
+/* ── Search bar ──────────────────────────────────────── */
 .search-bar {
   margin-bottom: 18px;
 }
@@ -257,6 +332,7 @@ select {
   background: #f8fafc;
 }
 
+/* ── Loading state ───────────────────────────────────── */
 .loading-state {
   padding: 40px 0;
   text-align: center;
@@ -268,6 +344,7 @@ select {
   font-weight: 600;
 }
 
+/* ── Table ───────────────────────────────────────────── */
 .table-responsive {
   margin-top: 20px;
   border-radius: 18px;
@@ -317,6 +394,7 @@ tbody tr:hover td {
   color: #10233d;
 }
 
+/* ── Status badges ───────────────────────────────────── */
 .status-badge {
   padding: 7px 12px;
   border-radius: 999px;
@@ -325,21 +403,10 @@ tbody tr:hover td {
   color: white;
 }
 
-.status-pending {
-  background: #f59e0b;
-}
-
-.status-processing {
-  background: #2563eb;
-}
-
-.status-delivered {
-  background: #16a34a;
-}
-
-.status-Created {
-  background: #64748b;
-}
+.status-pending    { background: #f59e0b; }
+.status-processing { background: #2563eb; }
+.status-delivered  { background: #16a34a; }
+.status-Created    { background: #64748b; }
 
 .form-select-sm {
   border-radius: 10px;
@@ -362,16 +429,25 @@ tbody tr:hover td {
   padding: 28px 18px !important;
 }
 
+/* ── Number input cleanup ────────────────────────────── */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+/* ── Responsive ──────────────────────────────────────── */
 @media (max-width: 960px) {
-  .hero-panel,
-  .feature-grid,
-  .summary-grid,
-  .toolbar-panel {
+  .feature-grid {
     grid-template-columns: 1fr;
   }
 
-  .toolbar-panel {
-    display: grid;
+  .summary-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
   .form-grid {
@@ -384,15 +460,20 @@ tbody tr:hover td {
 }
 
 @media (max-width: 768px) {
-  .app-shell {
+  .content-card {
     padding: 20px 14px 36px;
   }
 
-  .content-card,
-  .hero-panel,
-  .toolbar-panel,
   .form-panel {
     padding: 20px;
+  }
+
+  .app-header-inner {
+    padding: 0 14px;
+  }
+
+  .summary-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   thead {
@@ -421,14 +502,4 @@ tbody tr:hover td {
     font-weight: 700;
     color: #475569;
   }
-}
-
-input[type="number"]::-webkit-inner-spin-button,
-input[type="number"]::-webkit-outer-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-}
-
-input[type="number"] {
-  -moz-appearance: textfield;
 }

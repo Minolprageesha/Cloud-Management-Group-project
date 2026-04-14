@@ -1,11 +1,10 @@
-// frontend/src/components/ChangeStatus.jsx
 import { useState, useEffect } from "react";
 import { Table, Spinner, Input } from "reactstrap";
 import axios from "axios";
 
 const VITE_API_BASE = import.meta.env.VITE_API_BASE || "http://localhost:5000";
 
-export default function ChangeStatus() {
+export default function ChangeStatus({ mode, setMode }) {
   const [invoices, setInvoices] = useState([]);
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState(null);
@@ -60,7 +59,7 @@ export default function ChangeStatus() {
         return "status-delivered";
       default:
         return "bg-secondary";
-      }
+    }
   };
 
   const filteredInvoices = invoices.filter((inv) => {
@@ -68,7 +67,7 @@ export default function ChangeStatus() {
       inv.customerName,
       inv.customerEmail,
       inv.orderNumber,
-      inv.status
+      inv.status,
     ]
       .join(" ")
       .toLowerCase();
@@ -76,11 +75,13 @@ export default function ChangeStatus() {
     return searchTarget.includes(query.trim().toLowerCase());
   });
 
+  // ✅ Pending added
   const summary = {
     total: invoices.length,
     created: invoices.filter((inv) => inv.status === "Created").length,
+    pending: invoices.filter((inv) => inv.status === "Pending").length,
     processing: invoices.filter((inv) => inv.status === "Processing").length,
-    delivered: invoices.filter((inv) => inv.status === "Delivered").length
+    delivered: invoices.filter((inv) => inv.status === "Delivered").length,
   };
 
   if (loading)
@@ -93,7 +94,28 @@ export default function ChangeStatus() {
 
   return (
     <>
-      <div className="panel-heading">
+      {/* Toggle buttons */}
+      <div className="info-card" style={{ marginBottom: "24px" }}>
+        <div className="toggle-buttons">
+          <button
+            type="button"
+            className={mode === "create" ? "active" : ""}
+            onClick={() => setMode("create")}
+          >
+            Create New Order
+          </button>
+          <button
+            type="button"
+            className={mode === "update" ? "active" : ""}
+            onClick={() => setMode("update")}
+          >
+            Change Order Status
+          </button>
+        </div>
+      </div>
+
+      {/* Panel heading */}
+      <div className="panel-heading" style={{ marginBottom: "8px" }}>
         <p className="section-kicker">Status Management</p>
         <h2>Update Order Status</h2>
         <p className="panel-copy">
@@ -104,6 +126,7 @@ export default function ChangeStatus() {
 
       {errorMessage ? <p className="message-banner error">{errorMessage}</p> : null}
 
+      {/* ✅ 5 metric cards now */}
       <section className="summary-grid">
         <article className="metric-card">
           <span>Total Orders</span>
@@ -112,6 +135,10 @@ export default function ChangeStatus() {
         <article className="metric-card">
           <span>Created</span>
           <strong>{summary.created}</strong>
+        </article>
+        <article className="metric-card">
+          <span>Pending</span>
+          <strong>{summary.pending}</strong>
         </article>
         <article className="metric-card">
           <span>Processing</span>
@@ -163,7 +190,6 @@ export default function ChangeStatus() {
                     <div className="customer-name">{inv.customerName}</div>
                   </td>
 
-
                   <td data-label="Email">
                     <div className="customer-email">{inv.customerEmail}</div>
                   </td>
@@ -174,11 +200,8 @@ export default function ChangeStatus() {
 
                   <td data-label="Status">
                     <span
-                      className={`status-badge ${getStatusBadgeClass(
-                        inv.status
-                      )}`}
+                      className={`status-badge ${getStatusBadgeClass(inv.status)}`}
                     >
-
                       {inv.status}
                     </span>
                   </td>
