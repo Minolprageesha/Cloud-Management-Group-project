@@ -2,7 +2,7 @@ import { useState } from "react";
 
 const VITE_API_BASE = import.meta.env.VITE_API_BASE || "http://localhost:5000";
 
-export default function CreateOrder() {
+export default function CreateOrder({ mode, setMode }) {
   const [form, setForm] = useState({
     orderId: "",
     name: "",
@@ -41,7 +41,6 @@ export default function CreateOrder() {
 
       const data = await res.json();
 
-      // ⭐ Show backend error in message box
       if (!res.ok) {
         setMessageType("error");
         setMessage(data.error || "Something went wrong");
@@ -49,11 +48,9 @@ export default function CreateOrder() {
         return;
       }
 
-      // ⭐ Success message
       setMessageType("success");
       setMessage("Order created successfully");
 
-      // Reset form
       setForm({
         orderId: "",
         name: "",
@@ -83,7 +80,7 @@ export default function CreateOrder() {
 
         {message ? <p className={`message-banner ${messageType}`}>{message}</p> : null}
 
-        <form className="form-grid" onSubmit={handleSubmit}>
+        <form className="form-grid" onSubmit={handleSubmit} style={{ marginTop: "15px" }}>
           <label>
             Order ID
             <input
@@ -150,7 +147,28 @@ export default function CreateOrder() {
       </article>
 
       <aside className="info-panel">
-        <div className="info-card accent-card">
+
+        {/* Toggle buttons — wrapped in same info-card style as Quick Guide */}
+        <div className="info-card">
+          <div className="toggle-buttons">
+            <button
+              type="button"
+              className={mode === "create" ? "active" : ""}
+              onClick={() => setMode("create")}
+            >
+              Create New Order
+            </button>
+            <button
+              type="button"
+              className={mode === "update" ? "active" : ""}
+              onClick={() => setMode("update")}
+            >
+              Dashboard
+            </button>
+          </div>
+        </div>
+
+        <div className="info-card red-card">
           <span className="highlight-label">Quick Guide</span>
           <p>Use a unique order ID to avoid duplicate invoice records in the database.</p>
         </div>
@@ -163,13 +181,13 @@ export default function CreateOrder() {
           </p>
         </div>
 
-        <div className="info-card">
-          <span className="highlight-label">Cloud Angle</span>
-          <p>
-            This cleaner intake flow supports the group&apos;s cloud operations story by improving the
-            employee-facing order submission process.
-          </p>
-        </div>
+          <div className="info-card">
+            <span className="highlight-label">Admin Access</span>
+            <p>
+              This portal is restricted to authorised DPD Ireland staff. All order submissions are
+              logged and traceable within the operations system.
+            </p>
+          </div>
       </aside>
     </section>
   );
