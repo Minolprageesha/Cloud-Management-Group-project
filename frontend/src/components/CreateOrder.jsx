@@ -163,7 +163,7 @@ export default function CreateOrder({ mode, setMode }) {
               className={mode === "update" ? "active" : ""}
               onClick={() => setMode("update")}
             >
-              Change Order Status
+              Dashboard
             </button>
           </div>
         </div>
