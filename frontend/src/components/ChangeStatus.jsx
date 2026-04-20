@@ -75,7 +75,7 @@ export default function ChangeStatus({ mode, setMode }) {
     return searchTarget.includes(query.trim().toLowerCase());
   });
 
-  // ✅ Pending added
+  //  Pending added
   const summary = {
     total: invoices.length,
     created: invoices.filter((inv) => inv.status === "Created").length,
@@ -94,7 +94,6 @@ export default function ChangeStatus({ mode, setMode }) {
 
   return (
     <>
-      {/* Toggle buttons */}
       <div className="info-card" style={{ marginBottom: "24px" }}>
         <div className="toggle-buttons">
           <button
@@ -126,7 +125,7 @@ export default function ChangeStatus({ mode, setMode }) {
 
       {errorMessage ? <p className="message-banner error">{errorMessage}</p> : null}
 
-      {/* ✅ 5 metric cards now */}
+     
       <section className="summary-grid">
         <article className="metric-card">
           <span>Total Orders</span>

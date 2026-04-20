@@ -90,7 +90,7 @@ app.put('/api/invoices/:id/status', async (req, res) => {
       if (error) {
         console.error('Resend Error:', error);
       } else {
-        console.log('✅ Email sent successfully:', data.id);
+        console.log(' Email sent successfully:', data.id);
       }
     } else {
       console.error("Email skipped: RESEND_API_KEY is missing");
